@@ -1,20 +1,35 @@
-import db from '../config/db.js';
-import userDAO from '../dao/userDAO.js';
+import db from './config/db.js';
+import userDAO from './dao/userDAO.js';
 
 (async function () {
-    let dbs = new db();
-    let userdao = new userDAO();
-
-    await dbs.conectar();
-
-    await userdao.crear({ username: 'vicoriavegaaa', email: 'victoriavegabe@gmail.com' });
-    await userdao.crear({ username: 'vicoriavegaaa', email: 'victoriavegabe@gmail.com' });
-    await userdao.crear({ username: 'vicoriavegaaa', email: 'victoriavegabe@gmail.com' });
+    try {
+        let dbs = new db();
+        let userdao = new userDAO();
     
-    console.log(result);
+        await dbs.conectar();
+    
+        await userdao.crear({ username: 'vicoriavega', email: 'victoriavegabe@gmail.com' });
+        await userdao.crear({ username: 'vicoriavegaa', email: 'victoriavegabe1@gmail.com' });
+        const usuario2 = await userdao.crear({ username: 'vicoriavegaaa', email: 'victoriavegabe2@gmail.com' });
+        
+        const usuarios = await userdao.obtenerTodos();
+        console.log(usuarios);
+    
+        //let eliminarResponse = await userdao.eliminar('68de38053ceb75e7d23d3529');
+        //console.log(eliminarResponse);
 
-    let eliminarResponse = await userdao.eliminar('64a7f3f4f1c2b8e6d6f0c123');
-    console.log(eliminarResponse);
+        const idUsuarioActualizar = usuario2.insertedId;
+        await userdao.actualizar(idUsuarioActualizar, { email: 'victoriavegabe3@gmail.com' });
 
-    await dbs.desconectar();
+        const usuarioActualizado = await userdao.obtenerPorId(idUsuarioActualizar);
+        console.log(usuarioActualizado);
+
+        const usuariosActualizados = await userdao.obtenerTodos();
+        console.log(usuariosActualizados);
+    
+        await dbs.desconectar();
+    } catch (error) {
+        throw error;
+        await dbs.desconectar();
+    }
 })();
